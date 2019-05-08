@@ -1,3 +1,9 @@
 controllers:
+    host: 'projet.do'
     resource: ../../src/Controller/
+    type: annotation
+
+api_controllers:
+    host: 'api.projet.do'
+    resource: ../../src/ApiController/
     type: annotation
