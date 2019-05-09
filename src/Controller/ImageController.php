@@ -3,10 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Image;
-use App\Entity\Event;
 use App\Form\ImageType;
 use App\Repository\ImageRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -114,6 +114,7 @@ class ImageController extends AbstractController
                 $image->setImgPath($this->getParameter('image_path').'/'.$fileName);
 
             }
+
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('image_index', [
@@ -133,6 +134,7 @@ class ImageController extends AbstractController
     public function delete(Request $request, Image $image): Response
     {
         if ($this->isCsrfTokenValid('delete'.$image->getId(), $request->request->get('_token'))) {
+            $this->removeFile($image->getPath());
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($image);
             $entityManager->flush();

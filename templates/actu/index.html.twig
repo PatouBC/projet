@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Actu index{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-9">
+                <h1>Actu index</h1>
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Image</th>
+                        <th>actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for actu in actus %}
+                        <tr>
+                            <td>{{ actu.id }}</td>
+                            <td>{{ actu.title }}</td>
+                            <td>{{ actu.description }}</td>
+                            <td>{% if actu.image %}<img src="{{ asset(actu.image.imgpath) }}" width="150px" alt="{{ actu.image.alt }}"/>{% endif %}</td>
+                            <td>
+                                <a href="{{ path('actu_show', {'id': actu.id}) }}">show</a>
+                                <a href="{{ path('actu_edit', {'id': actu.id}) }}">edit</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4">no records found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <a href="{{ path('actu_new') }}">Create new</a>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

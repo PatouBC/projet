@@ -15,7 +15,7 @@ class ImageType extends AbstractType
         $builder
             ->add('file', FileType::class, array(
                 'label'=>'image',
-                'required'=> false
+                'required'=>false
             ))
             ->add('alt')
         ;

@@ -2,37 +2,37 @@
 
 namespace App\Controller;
 
-use App\Entity\Event;
 use App\Entity\Image;
-use App\Form\EventType;
-use App\Repository\EventRepository;
+use App\Entity\Actu;
+use App\Form\ActuType;
+use App\Repository\ActuRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/event")
+ * @Route("/actu", host="projet.do")
  */
-class EventController extends AbstractController
+class ActuController extends AbstractController
 {
     /**
-     * @Route("/", name="event_index", methods={"GET"})
+     * @Route("/", name="actu_index", methods={"GET"})
      */
-    public function index(EventRepository $eventRepository): Response
+    public function index(ActuRepository $actuRepository): Response
     {
-        return $this->render('event/index.html.twig', [
-            'events' => $eventRepository->findAll(),
+        return $this->render('actu/index.html.twig', [
+            'actus' => $actuRepository->findAll(),
         ]);
     }
 
     /**
-     * @Route("/new", name="event_new", methods={"GET","POST"})
+     * @Route("/new", name="actu_new", methods={"GET","POST"})
      */
     public function new(Request $request): Response
     {
-        $event = new Event();
-        $form = $this->createForm(EventType::class, $event);
+        $actu = new Actu();
+        $form = $this->createForm(ActuType::class, $actu);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -55,19 +55,19 @@ class EventController extends AbstractController
                 $image->setPath($this->getParameter('image_abs_path').'/'.$fileName);
                 $image->setImgPath($this->getParameter('image_path').'/'.$fileName);
                 $entityManager->persist($image);
-                $event->setImage($image);
+                $actu->setImage($image);
             }else{
-                $event->setImage(null);
+                $actu->setImage(null);
             }
 
-            $entityManager->persist($event);
+            $entityManager->persist($actu);
             $entityManager->flush();
 
-            return $this->redirectToRoute('event_index');
+            return $this->redirectToRoute('actu_index');
         }
 
-        return $this->render('event/new.html.twig', [
-            'event' => $event,
+        return $this->render('actu/new.html.twig', [
+            'actu' => $actu,
             'form' => $form->createView(),
         ]);
     }
@@ -80,27 +80,27 @@ class EventController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="event_show", methods={"GET"})
+     * @Route("/{id}", name="actu_show", methods={"GET"})
      */
-    public function show(Event $event): Response
+    public function show(Actu $actu): Response
     {
-        return $this->render('event/show.html.twig', [
-            'event' => $event,
+        return $this->render('actu/show.html.twig', [
+            'actu' => $actu,
         ]);
     }
 
     /**
-     * @Route("/{id}/edit", name="event_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="actu_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Event $event): Response
+    public function edit(Request $request, Actu $actu): Response
     {
-        $form = $this->createForm(EventType::class, $event);
+        $form = $this->createForm(ActuType::class, $actu);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             /** @var Symfony\Component\HttpFoundation\File\UploadedFile $file */
-            $image = $event->getImage();
+            $image = $actu->getImage();
             $file = $form->get('image')->get('file')->getData();
 
             if($file)
@@ -121,59 +121,57 @@ class EventController extends AbstractController
                 $image->setPath($this->getParameter('image_abs_path').'/'.$fileName);
                 $image->setImgPath($this->getParameter('image_path').'/'.$fileName);
                 $entityManager->persist($image);
-                $event->setImage($image);
+                $actu->setImage($image);
             }
             if(empty($image->getId())&& !$file)
             {
-                $event->setImage(null);
+                $actu->setImage(null);
             }
             $entityManager->flush();
 
-            return $this->redirectToRoute('event_index', [
-                'id' => $event->getId(),
+            return $this->redirectToRoute('actu_index', [
+                'id' => $actu->getId(),
             ]);
         }
 
-        return $this->render('event/edit.html.twig', [
-            'event' => $event,
+        return $this->render('actu/edit.html.twig', [
+            'actu' => $actu,
             'form' => $form->createView(),
         ]);
     }
 
     /**
-     * @Route("/{id}", name="event_delete", methods={"DELETE"})
+     * @Route("/{id}", name="actu_delete", methods={"DELETE"})
      */
-    public function delete(Request $request, Event $event): Response
+    public function delete(Request $request, Actu $actu): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$event->getId(), $request->request->get('_token'))) {
-            $image = $event->getImage();
+        if ($this->isCsrfTokenValid('delete'.$actu->getId(), $request->request->get('_token'))) {
+            $image = $actu->getImage();
             if($image){
                 $this->removeFile($image->getPath());
             }
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($event);
+            $entityManager->remove($actu);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('event_index');
+        return $this->redirectToRoute('actu_index');
     }
     /**
-     * @Route("/{id}", name="product_image_delete", methods={"POST"})
+     * @Route("/{id}", name="actu_image_delete", methods={"POST"})
      */
-    public function deleteImg(Request $request, Event $event): Response
+    public function deleteImg(Request $request, Actu $actu): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$event->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$actu->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
-            $image = $event->getImage();
+            $image = $actu->getImage();
             $this->removeFile($image->getPath());
-            $event->setImage(null);
-
+            $actu->setImage(null);
             $entityManager->remove($image);
-            $entityManager->persist($event);
+            $entityManager->persist($actu);
             $entityManager->flush();
         }
-
-        return $this->redirectToRoute('product_edit', array('id'=>$event->getId()));
+        return $this->redirectToRoute('actu_edit', array('id'=>$actu->getId()));
     }
     private function removeFile($path)
     {
@@ -182,4 +180,5 @@ class EventController extends AbstractController
             unlink($path);
         }
     }
+
 }
