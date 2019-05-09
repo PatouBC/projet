@@ -6,6 +6,7 @@ use App\Entity\Image;
 use App\Form\ImageType;
 use App\Repository\ImageRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -35,6 +36,26 @@ class ImageController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            /** @var Symfony\Component\HttpFoundation\File\UploadedFile $file */
+            $file = $form->get('file')->getData();
+
+            if($file){
+                $fileName=$this->generateUniqueFileName().'.'.$file->guessExtension();
+
+                try{
+                    $file->move(
+                        $this->getParameter('image_abs_path'),
+                        $fileName
+                    );
+                }catch(FileException $e){
+
+                }
+                $image->setPath($this->getParameter('image_abs_path').'/'.$fileName);
+                $image->setImgPath($this->getParameter('image_path').'/'.$fileName);
+
+            }
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($image);
             $entityManager->flush();
@@ -46,6 +67,14 @@ class ImageController extends AbstractController
             'image' => $image,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @return string
+     */
+    private function generateUniqueFileName()
+    {
+        return md5(uniqid());
     }
 
     /**
@@ -67,6 +96,27 @@ class ImageController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            /** @var Symfony\Component\HttpFoundation\File\UploadedFile $file */
+            $file = $form->get('file')->getData();
+
+            if($file){
+                $fileName=$this->generateUniqueFileName().'.'.$file->guessExtension();
+
+                try{
+                    $file->move(
+                        $this->getParameter('image_abs_path'),
+                        $fileName
+                    );
+                }catch(FileException $e){
+
+                }
+                $this->removeFile($image->getPath());
+                $image->setPath($this->getParameter('image_abs_path').'/'.$fileName);
+                $image->setImgPath($this->getParameter('image_path').'/'.$fileName);
+
+            }
+
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('image_index', [
@@ -86,6 +136,9 @@ class ImageController extends AbstractController
     public function delete(Request $request, Image $image): Response
     {
         if ($this->isCsrfTokenValid('delete'.$image->getId(), $request->request->get('_token'))) {
+
+            $this->removeFile($image->getPath());
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($image);
             $entityManager->flush();
@@ -93,4 +146,13 @@ class ImageController extends AbstractController
 
         return $this->redirectToRoute('image_index');
     }
+
+    private function removeFile($path)
+    {
+        if(file_exists($path))
+        {
+            unlink($path);
+        }
+    }
+
 }

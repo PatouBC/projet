@@ -9,8 +9,7 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Path</th>
-                <th>Imgpath</th>
+                <th>Image</th>
                 <th>Alt</th>
                 <th>actions</th>
             </tr>
@@ -19,8 +18,7 @@
         {% for image in images %}
             <tr>
                 <td>{{ image.id }}</td>
-                <td>{{ image.path }}</td>
-                <td>{{ image.imgpath }}</td>
+                <td><img src="{{ asset(image.imgpath) }}" width="150px"/></td>
                 <td>{{ image.alt }}</td>
                 <td>
                     <a href="{{ path('image_show', {'id': image.id}) }}">show</a>

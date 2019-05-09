@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ImageRepository")
@@ -71,4 +73,21 @@ class Image
 
         return $this;
     }
+
+    /**
+     * @Assert\File(mimeTypes={"image/png", "image/jpeg", "image/jpg"})
+     */
+    private $file;
+
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    public function setFile($file)
+    {
+        $this->file=$file;
+        return $this;
+    }
+
 }
