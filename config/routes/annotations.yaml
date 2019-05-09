@@ -3,6 +3,11 @@ controllers:
     resource: ../../src/Controller/
     type: annotation
 
+api_auth_login:
+    host: 'api.projet.do'
+    path: /login_check
+    methods: [POST]
+
 api_controllers:
     host: 'api.projet.do'
     resource: ../../src/ApiController/

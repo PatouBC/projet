@@ -16,16 +16,26 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        api_login:
-            pattern: ^/api.projet.do/login
+        login:
+            host: api\.projet\.do
+            pattern: ^/login
             stateless: true
             anonymous: true
             json_login:
-                provider: fos_userbundle
-                check_path: /api.projet.do/login
+                check_path: /login_check
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        api:
+            host: api\.projet\.do
+            pattern: ^/
+            stateless: true
+            anonymous: false
             provider: fos_userbundle
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+
 
         main:
             pattern: ^/
@@ -39,4 +49,6 @@ security:
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/task, role: ROLE_USER, host: api\.projet\.do}
+#        - { path: ^/task, role: ROLE_USER, host: projet\.do}
         - { path: ^/admin, roles: ROLE_ADMIN }
