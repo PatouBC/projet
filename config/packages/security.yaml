@@ -52,3 +52,4 @@ security:
 #        - { path: ^/task, role: ROLE_USER, host: api\.projet\.do}
 #        - { path: ^/task, role: ROLE_USER, host: projet\.do}
         - { path: ^/admin, roles: ROLE_ADMIN }
+
