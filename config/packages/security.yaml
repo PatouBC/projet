@@ -36,8 +36,8 @@ security:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
 
-
         main:
+            host: projet\.do
             pattern: ^/
             form_login:
                 provider: fos_userbundle
@@ -46,10 +46,10 @@ security:
             anonymous:  true
 
     access_control:
-        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
-#        - { path: ^/task, role: ROLE_USER, host: api\.projet\.do}
+        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY , host: projet\.do}
+        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY, host: projet\.do }
+        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY, host: projet\.do }
+#        - { path: ^/actu, role: ROLE_USER, host: api\.projet\.do}
 #        - { path: ^/task, role: ROLE_USER, host: projet\.do}
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN, host: projet\.do }
 

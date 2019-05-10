@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/image")
+ * @Route("/image", host="projet.do")
  */
 class ImageController extends AbstractController
 {

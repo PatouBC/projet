@@ -5,5 +5,5 @@ fos_rest:
         enabled: true
     format_listener:
         rules:
-            - { host: api.projet.do, path: ^/, prefer_extension: true, fallback_format: json, priorities: [ json ]}
-            - { host: projet.do, path: ^/, priorities: [ html ], fallback_format: html }
+            - { host: api.projet.do, path: ^/ , prefer_extension: true, fallback_format: json, priorities: [ json] }
+            - { host: projet.do, path: ^/ , priorities: [ html], fallback_format: html }

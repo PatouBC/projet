@@ -20,6 +20,12 @@ class ImageType extends AbstractType
             ->add('alt')
         ;
     }
+    public function apiBuildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('imgpath')
+            ->add('path');
+    }
 
     public function configureOptions(OptionsResolver $resolver)
     {
